@@ -15,7 +15,7 @@
     ```
 > [!NOTE]
 >
-> with requests coming from `LOCAL_CIDRS`, `LOCAL_IP` will be responsed.
+> for requests coming from `LOCAL_CIDRS`, `LOCAL_IP` will be responded.
 - **response**
     ```json
     { "ip": "your ip" }

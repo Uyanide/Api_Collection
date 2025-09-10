@@ -1,0 +1,8 @@
+services:
+  api:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
+    restart: unless-stopped

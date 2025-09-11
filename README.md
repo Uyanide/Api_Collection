@@ -3,6 +3,7 @@
 ### General envs
 
 - **PORT**: port that the server listens to (default: 10087)
+- **GIN_MODE**: as defined in [Gin Documentation](https://gin-gonic.com/en/docs/deployment/)
 
 ### IP query
 

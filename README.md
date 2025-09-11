@@ -15,7 +15,7 @@
         ```
 > [!NOTE]
 >
-> for requests coming from `LOCAL_CIDRS`, `LOCAL_IP` will be responded.
+> For requests coming from `LOCAL_CIDRS`, `LOCAL_IP` will be responded.
 - **response**:
     ```json
     { "ip": "your ip" }
@@ -29,9 +29,12 @@
         - url_path: e.g. `/myfile`
         - file_path: e.g. `/app/data/myfile.txt`
         - file_name: e.g. `myfile_downloaded.txt`
+
+        as a whole,
         ```conf
         FILE_MAP=/myfile:/app/data/myfile.txt:myfile_downloaded.txt
         ```
+        means `domain.tld/myfile` will download `/app/data/myfile.txt` with name `myfile_downloaded.txt`
 - **response**: file as attachment
 > [!IMPORTANT]
 >

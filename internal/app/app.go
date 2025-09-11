@@ -6,7 +6,8 @@ import (
 
 	"github.com/Uyanide/Api_Collection/internal/config"
 	"github.com/Uyanide/Api_Collection/internal/logger"
-	"github.com/Uyanide/Api_Collection/internal/router"
+	"github.com/Uyanide/Api_Collection/internal/middleware"
+	"github.com/Uyanide/Api_Collection/internal/services"
 	file_service "github.com/Uyanide/Api_Collection/internal/services/file"
 	ip_service "github.com/Uyanide/Api_Collection/internal/services/ip"
 	"github.com/gin-gonic/gin"
@@ -27,17 +28,17 @@ func NewApp() *App {
 
 	log.Info("Initializing application components")
 
+	services := []services.GeneralService{
+		&file_service.FileService{},
+		&ip_service.IPService{},
+	}
+
 	// Initialize services
-	ipService := ip_service.NewIPService(cfg)
-	fileSingleService := file_service.NewFileSingleService(cfg)
-
-	// Initialize handlers
-	ipHandler := ip_service.NewIPHandler(ipService)
-	fileSingleHandler := file_service.NewFileSingleHandler(fileSingleService)
-
-	// Initialize router
-	r := router.NewRouter(cfg, ipHandler, fileSingleHandler)
-	engine := r.SetupRoutes()
+	engine := gin.Default()
+	for _, service := range services {
+		service.Init(engine)
+	}
+	engine = middleware.StripTrailingSlash(engine)
 
 	log.Info("Application components initialized successfully")
 
@@ -51,9 +52,7 @@ func NewApp() *App {
 // Start starts the application server
 func (a *App) Start() error {
 	a.logger.WithFields(logrus.Fields{
-		"port":        a.config.Port,
-		"local_ip":    a.config.LocalIP,
-		"local_cidrs": a.config.LocalCIDRStr,
+		"port": a.config.Port,
 	}).Info("Starting server")
 
 	addr := ":" + strconv.Itoa(a.config.Port)

@@ -9,7 +9,7 @@ func main() {
 	logger.InitLogger()
 	log := logger.GetLogger()
 
-	log.Info("Starting application")
+	log.Info("Starting server")
 
 	application := app.NewApp()
 

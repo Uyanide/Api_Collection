@@ -1,20 +1,19 @@
-package handlers
+package ip_service
 
 import (
 	"net/http"
 	"time"
 
 	"github.com/Uyanide/Api_Collection/internal/logger"
-	"github.com/Uyanide/Api_Collection/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 type IPHandler struct {
-	ipService *service.IPService
+	ipService *IPService
 }
 
-func NewIPHandler(ipService *service.IPService) *IPHandler {
+func NewIPHandler(ipService *IPService) *IPHandler {
 	return &IPHandler{
 		ipService: ipService,
 	}

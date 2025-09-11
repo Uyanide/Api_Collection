@@ -5,10 +5,10 @@ import (
 	"strconv"
 
 	"github.com/Uyanide/Api_Collection/internal/config"
-	"github.com/Uyanide/Api_Collection/internal/handlers"
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/Uyanide/Api_Collection/internal/router"
-	"github.com/Uyanide/Api_Collection/internal/service"
+	file_service "github.com/Uyanide/Api_Collection/internal/services/file"
+	ip_service "github.com/Uyanide/Api_Collection/internal/services/ip"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -28,12 +28,12 @@ func NewApp() *App {
 	log.Info("Initializing application components")
 
 	// Initialize services
-	ipService := service.NewIPService(cfg)
-	fileSingleService := service.NewFileSingleService(cfg)
+	ipService := ip_service.NewIPService(cfg)
+	fileSingleService := file_service.NewFileSingleService(cfg)
 
 	// Initialize handlers
-	ipHandler := handlers.NewIPHandler(ipService)
-	fileSingleHandler := handlers.NewFileSingleHandler(fileSingleService)
+	ipHandler := ip_service.NewIPHandler(ipService)
+	fileSingleHandler := file_service.NewFileSingleHandler(fileSingleService)
 
 	// Initialize router
 	r := router.NewRouter(cfg, ipHandler, fileSingleHandler)

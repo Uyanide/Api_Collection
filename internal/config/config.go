@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/Uyanide/Api_Collection/internal/logger"
-	"github.com/Uyanide/Api_Collection/internal/models"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
@@ -19,7 +18,12 @@ type Config struct {
 	LocalCIDRs   []*net.IPNet
 	LocalCIDRStr []string
 
-	FileMap map[string]models.FileObject
+	FileMap map[string]FileEntry
+}
+
+type FileEntry struct {
+	Path string
+	Name string
 }
 
 func NewConfig() *Config {
@@ -68,7 +72,7 @@ func NewConfig() *Config {
 	log.WithField("local_ip", localIP).Info("Parsed local IP")
 
 	// Parse file map
-	fileMap := make(map[string]models.FileObject)
+	fileMap := make(map[string]FileEntry)
 	fileMapEnv := os.Getenv("FILE_MAP")
 	if fileMapEnv != "" {
 		mappings := strings.Split(fileMapEnv, ",")
@@ -85,7 +89,7 @@ func NewConfig() *Config {
 				log.WithField("mapping", mapping).Warn("Empty URL path, file path or file name in FILE_MAP entry, skipping")
 				continue
 			}
-			fileMap[urlPath] = models.FileObject{
+			fileMap[urlPath] = FileEntry{
 				Path: filePath,
 				Name: fileName,
 			}

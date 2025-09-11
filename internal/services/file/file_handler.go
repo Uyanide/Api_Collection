@@ -1,17 +1,16 @@
-package handlers
+package file_service
 
 import (
 	"github.com/Uyanide/Api_Collection/internal/logger"
-	"github.com/Uyanide/Api_Collection/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 type FileSingleHandler struct {
-	fileService *service.FileSingleService
+	fileService *FileSingleService
 }
 
-func NewFileSingleHandler(fileService *service.FileSingleService) *FileSingleHandler {
+func NewFileSingleHandler(fileService *FileSingleService) *FileSingleHandler {
 	return &FileSingleHandler{
 		fileService: fileService,
 	}

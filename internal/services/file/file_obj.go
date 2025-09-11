@@ -1,4 +1,4 @@
-package models
+package file_service
 
 type FileObject struct {
 	Path string `json:"path"`

@@ -1,6 +1,6 @@
 package file_service
 
-type FileObject struct {
+type fileObject struct {
 	Path string `json:"path"`
 	Name string `json:"name"`
 }

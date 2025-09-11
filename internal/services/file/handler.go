@@ -8,18 +8,18 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (s *FileService) ServeFile(c *gin.Context, urlPath string) {
+func (s *FileService) serveFile(c *gin.Context, urlPath string) {
 	log := logger.GetLogger()
 
 	log.WithField("handler", "DownloadFile").Info("Handling file download request")
 
-	filePath, exists := s.GetFilePath(urlPath)
+	filePath, exists := s.getFilePath(urlPath)
 	if !exists || filePath == "" {
 		c.AbortWithStatusJSON(404, gin.H{"error": "File not found"})
 		log.WithField("urlPath", urlPath).Warn("File not found")
 		return
 	}
-	fileName, _ := s.GetFileName(urlPath) // already checked existence
+	fileName, _ := s.getFileName(urlPath) // already checked existence
 
 	c.FileAttachment(filePath, fileName)
 	log.WithFields(logrus.Fields{
@@ -29,7 +29,7 @@ func (s *FileService) ServeFile(c *gin.Context, urlPath string) {
 	}).Info("Request processed successfully")
 }
 
-func (s *FileService) GetFilePath(key string) (string, bool) {
+func (s *FileService) getFilePath(key string) (string, bool) {
 	obj, exists := s.fileMap[key]
 	if !exists {
 		return "", false
@@ -41,7 +41,7 @@ func (s *FileService) GetFilePath(key string) (string, bool) {
 	return obj.Path, true
 }
 
-func (s *FileService) GetFileName(key string) (string, bool) {
+func (s *FileService) getFileName(key string) (string, bool) {
 	obj, exists := s.fileMap[key]
 	if !exists {
 		return "", false

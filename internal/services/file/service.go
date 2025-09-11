@@ -5,7 +5,7 @@ import (
 )
 
 type FileService struct {
-	fileMap map[string]FileObject
+	fileMap map[string]fileObject
 }
 
 func (s *FileService) Init(e *gin.Engine) {

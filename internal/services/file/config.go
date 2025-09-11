@@ -11,7 +11,7 @@ func (s *FileService) loadConfig() {
 	log := logrus.New()
 
 	// Parse file map
-	s.fileMap = make(map[string]FileObject)
+	s.fileMap = make(map[string]fileObject)
 	fileMapEnv := os.Getenv("FILE_MAP")
 	if fileMapEnv != "" {
 		mappings := strings.Split(fileMapEnv, ",")
@@ -28,7 +28,7 @@ func (s *FileService) loadConfig() {
 				log.WithField("mapping", mapping).Warn("Empty URL path, file path or file name in FILE_MAP entry, skipping")
 				continue
 			}
-			s.fileMap[urlPath] = FileObject{
+			s.fileMap[urlPath] = fileObject{
 				Path: filePath,
 				Name: fileName,
 			}

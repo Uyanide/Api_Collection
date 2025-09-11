@@ -16,7 +16,7 @@ func InitLogger() {
 
 	Log.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat: "2006-01-02 15:04:05",
-	})
+	}) // looks better in console, decent in docker logs
 
 	Log.SetLevel(logrus.InfoLevel)
 }

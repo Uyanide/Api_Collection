@@ -10,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (s *IPService) GetIPHandler(c *gin.Context) {
+func (s *IPService) getIPHandler(c *gin.Context) {
 	startTime := time.Now()
 	log := logger.GetLogger()
 
@@ -35,7 +35,7 @@ func (s *IPService) GetIPHandler(c *gin.Context) {
 	}
 
 	// Get IP response from service
-	response, err := s.GetIP(clientIP)
+	response, err := s.getIP(clientIP)
 	if err != nil {
 		log.WithFields(logrus.Fields{
 			"client_ip": clientIP,
@@ -58,7 +58,7 @@ func (s *IPService) GetIPHandler(c *gin.Context) {
 	}).Info("Request processed successfully")
 }
 
-func (s *IPService) GetIP(clientIP string) (*IPResponse, error) {
+func (s *IPService) getIP(clientIP string) (*ipResponse, error) {
 	log := logger.GetLogger()
 
 	log.WithField("client_ip", clientIP).Debug("Processing IP request")
@@ -67,17 +67,17 @@ func (s *IPService) GetIP(clientIP string) (*IPResponse, error) {
 	if ip == nil {
 		log.WithField("client_ip", clientIP).Warn("Failed to parse client IP, returning as-is")
 		// If parsing fails, return the original client IP
-		return &IPResponse{IP: clientIP}, nil
+		return &ipResponse{IP: clientIP}, nil
 	}
 
 	// Check if client IP belongs to local CIDRs
-	if s.IsLocalIP(ip) {
+	if s.isLocalIP(ip) {
 		log.WithFields(logrus.Fields{
 			"client_ip": clientIP,
 			"return_ip": s.localIP,
 			"reason":    "client_ip_in_local_cidr",
 		}).Info("Returning local IP for client in local CIDR")
-		return &IPResponse{IP: s.localIP}, nil
+		return &ipResponse{IP: s.localIP}, nil
 	}
 
 	log.WithFields(logrus.Fields{
@@ -86,10 +86,10 @@ func (s *IPService) GetIP(clientIP string) (*IPResponse, error) {
 		"reason":    "external_ip",
 	}).Info("Returning client IP for external client")
 
-	return &IPResponse{IP: clientIP}, nil
+	return &ipResponse{IP: clientIP}, nil
 }
 
-func (s *IPService) IsLocalIP(ip net.IP) bool {
+func (s *IPService) isLocalIP(ip net.IP) bool {
 	for _, cidr := range s.localCIDRs {
 		if cidr.Contains(ip) {
 			return true

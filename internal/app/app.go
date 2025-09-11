@@ -8,8 +8,6 @@ import (
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/Uyanide/Api_Collection/internal/middleware"
 	"github.com/Uyanide/Api_Collection/internal/services"
-	file_service "github.com/Uyanide/Api_Collection/internal/services/file"
-	ip_service "github.com/Uyanide/Api_Collection/internal/services/ip"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -28,17 +26,12 @@ func NewApp() *App {
 
 	log.Info("Initializing application components")
 
-	services := []services.GeneralService{
-		&file_service.FileService{},
-		&ip_service.IPService{},
-	}
+	// Initialize Gin engine
+	engine := gin.Default()
+	engine = middleware.StripTrailingSlash(engine)
 
 	// Initialize services
-	engine := gin.Default()
-	for _, service := range services {
-		service.Init(engine)
-	}
-	engine = middleware.StripTrailingSlash(engine)
+	services.NewServices(engine)
 
 	log.Info("Application components initialized successfully")
 

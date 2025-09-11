@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Config holds the general configuration(s) for the application
 type Config struct {
 	Port int
 }
@@ -38,8 +39,6 @@ func NewConfig() *Config {
 	config := &Config{
 		Port: port,
 	}
-
-	log.Info("Configuration initialized successfully")
 
 	return config
 }

@@ -28,7 +28,7 @@ func NewApp() *App {
 
 	// Initialize Gin engine
 	engine := gin.Default()
-	engine = middleware.StripTrailingSlash(engine)
+	engine.Use(middleware.StripTrailingSlash())
 
 	// Initialize services
 	services.NewServices(engine)

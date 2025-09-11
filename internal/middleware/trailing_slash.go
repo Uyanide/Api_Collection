@@ -10,10 +10,10 @@ import (
 )
 
 // StripTrailingSlash removes trailing slashes from request URLs
-func StripTrailingSlash(next *gin.Engine) *gin.Engine {
+func StripTrailingSlash() gin.HandlerFunc {
 	log := logger.GetLogger()
 
-	next.Use(func(c *gin.Context) {
+	return func(c *gin.Context) {
 		if c.Request.URL.Path != "/" && strings.HasSuffix(c.Request.URL.Path, "/") {
 			// Create a new URL without the trailing slash
 			newPath := strings.TrimSuffix(c.Request.URL.Path, "/")
@@ -31,7 +31,5 @@ func StripTrailingSlash(next *gin.Engine) *gin.Engine {
 		}
 
 		c.Next()
-	})
-
-	return next
+	}
 }

@@ -6,6 +6,7 @@
 
 ### IP query
 
+- **method**: GET
 - **route**: /ip
 - **envs**:
     - **LOCAL_IP**: public ip of the local system (defaut: 127.0.0.1 <s>which does not make any sense, I know</s>)
@@ -23,6 +24,7 @@
 
 ### File service
 
+- **method**: GET
 - **route**: as defined in `FILE_MAP`
 - **envs**:
     - **FILE_MAP**: entries separated with `,`, each entry consists of three elements sepatated with `:`:
@@ -39,3 +41,12 @@
 > [!IMPORTANT]
 >
 > If the service runs in a docker container, make sure file_path in `FILE_MAP` points to files within the container rather than on the local disk. Consider placing the file in `./data`, which will map to `/app/data` within the container.
+
+### CORS proxy
+
+- **method**: any (not completely tested yet)
+- **route**: /proxy
+- **params**:
+    - **url**: url with http/https scheme
+- **envs**:
+    - **AUTO_CORRECT_SCHEME**: whether to add `http://` to urls that do not begin with `http://` or `https://`. accepted values: `0` / `1`, default: `0`

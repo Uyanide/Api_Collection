@@ -11,7 +11,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -trimpath -ldflags="-s -w" -o /app/api_collection .
 
-# Final runtime image (small and simple)
+# Final runtime image
 FROM alpine:3.19
 
 # Create non-root user

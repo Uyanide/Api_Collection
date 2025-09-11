@@ -3,7 +3,6 @@ package ip_service
 import (
 	"net"
 	"net/http"
-	"time"
 
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/gin-gonic/gin"
@@ -11,7 +10,6 @@ import (
 )
 
 func (s *IPService) getIPHandler(c *gin.Context) {
-	startTime := time.Now()
 	log := logger.GetLogger()
 
 	// Log the incoming request
@@ -22,7 +20,7 @@ func (s *IPService) getIPHandler(c *gin.Context) {
 		"path":       r.URL.Path,
 		"client_ip":  clientIP,
 		"user_agent": r.UserAgent(),
-	}).Info("Incoming request")
+	}).Debug("Incoming request")
 
 	// Deny non-GET methods
 	if r.Method != http.MethodGet {
@@ -49,11 +47,9 @@ func (s *IPService) getIPHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 
 	// Log successful response
-	duration := time.Since(startTime)
 	log.WithFields(logrus.Fields{
 		"client_ip":   clientIP,
 		"response_ip": response.IP,
-		"duration_ms": duration.Milliseconds(),
 		"status":      "success",
 	}).Info("Request processed successfully")
 }
@@ -76,7 +72,7 @@ func (s *IPService) getIP(clientIP string) (*ipResponse, error) {
 			"client_ip": clientIP,
 			"return_ip": s.localIP,
 			"reason":    "client_ip_in_local_cidr",
-		}).Info("Returning local IP for client in local CIDR")
+		}).Debug("Returning local IP for client in local CIDR")
 		return &ipResponse{IP: s.localIP}, nil
 	}
 
@@ -84,7 +80,7 @@ func (s *IPService) getIP(clientIP string) (*ipResponse, error) {
 		"client_ip": clientIP,
 		"return_ip": clientIP,
 		"reason":    "external_ip",
-	}).Info("Returning client IP for external client")
+	}).Debug("Returning client IP for external client")
 
 	return &ipResponse{IP: clientIP}, nil
 }

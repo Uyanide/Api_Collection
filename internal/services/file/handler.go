@@ -11,7 +11,7 @@ import (
 func (s *FileService) serveFile(c *gin.Context, urlPath string) {
 	log := logger.GetLogger()
 
-	log.WithField("handler", "DownloadFile").Info("Handling file download request")
+	log.WithField("handler", "DownloadFile").Debug("Handling file download request")
 
 	filePath, exists := s.getFilePath(urlPath)
 	if !exists || filePath == "" {

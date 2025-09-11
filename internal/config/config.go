@@ -7,21 +7,22 @@ import (
 	"strings"
 
 	"github.com/Uyanide/Api_Collection/internal/logger"
+	"github.com/Uyanide/Api_Collection/internal/models"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
 
-// Config holds the application configuration
 type Config struct {
-	Port         int
+	Port int
+
 	LocalIP      string
 	LocalCIDRs   []*net.IPNet
 	LocalCIDRStr []string
+
+	FileMap map[string]models.FileObject
 }
 
-// NewConfig creates a new configuration with default values
 func NewConfig() *Config {
-
 	log := logger.GetLogger()
 	log.Info("Initializing configuration")
 
@@ -66,23 +67,50 @@ func NewConfig() *Config {
 	}
 	log.WithField("local_ip", localIP).Info("Parsed local IP")
 
+	// Parse file map
+	fileMap := make(map[string]models.FileObject)
+	fileMapEnv := os.Getenv("FILE_MAP")
+	if fileMapEnv != "" {
+		mappings := strings.Split(fileMapEnv, ",")
+		for _, mapping := range mappings {
+			parts := strings.SplitN(mapping, ":", 3)
+			if len(parts) != 3 {
+				log.WithField("mapping", mapping).Warn("Invalid FILE_MAP entry, skipping")
+				continue
+			}
+			urlPath := strings.TrimSpace(parts[0])
+			filePath := strings.TrimSpace(parts[1])
+			fileName := strings.TrimSpace(parts[2])
+			if urlPath == "" || filePath == "" || fileName == "" {
+				log.WithField("mapping", mapping).Warn("Empty URL path, file path or file name in FILE_MAP entry, skipping")
+				continue
+			}
+			fileMap[urlPath] = models.FileObject{
+				Path: filePath,
+				Name: fileName,
+			}
+
+			log.WithFields(logrus.Fields{
+				"url_path":  urlPath,
+				"file_path": filePath,
+				"file_name": fileName,
+			}).Info("Parsed FILE_MAP entry")
+		}
+	}
+
 	config := &Config{
 		Port:         port,
 		LocalIP:      localIP,
 		LocalCIDRs:   cidrs,
 		LocalCIDRStr: localCIDRs,
+		FileMap:      fileMap,
 	}
 
-	log.WithFields(logrus.Fields{
-		"port":        config.Port,
-		"local_ip":    config.LocalIP,
-		"local_cidrs": config.LocalCIDRStr,
-	}).Info("Configuration initialized successfully")
+	log.Info("Configuration initialized successfully")
 
 	return config
 }
 
-// IsLocalIP checks if the given IP belongs to any of the local CIDRs
 func (c *Config) IsLocalIP(ip net.IP) bool {
 	for _, cidr := range c.LocalCIDRs {
 		if cidr.Contains(ip) {

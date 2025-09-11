@@ -29,12 +29,14 @@ func NewApp() *App {
 
 	// Initialize services
 	ipService := service.NewIPService(cfg)
+	fileSingleService := service.NewFileSingleService(cfg)
 
 	// Initialize handlers
 	ipHandler := handlers.NewIPHandler(ipService)
+	fileSingleHandler := handlers.NewFileSingleHandler(fileSingleService)
 
 	// Initialize router
-	r := router.NewRouter(ipHandler)
+	r := router.NewRouter(cfg, ipHandler, fileSingleHandler)
 	engine := r.SetupRoutes()
 
 	log.Info("Application components initialized successfully")

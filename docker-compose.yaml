@@ -6,3 +6,6 @@ services:
     ports:
       - "${PORT}:${PORT}"
     restart: unless-stopped
+    container_name: api_collection
+    volumes:
+      - ./data:/app/data

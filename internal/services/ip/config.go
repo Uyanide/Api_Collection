@@ -29,7 +29,8 @@ func (s *IPService) loadConfig() {
 			log.WithFields(logrus.Fields{
 				"cidr":  cidrStr,
 				"error": err.Error(),
-			}).Fatal("Invalid CIDR configuration")
+			}).Warn("Invalid CIDR configuration")
+			continue
 		}
 		log.WithField("cidr", cidrStr).Info("Parsed local CIDR")
 		s.localCIDRs[i] = cidr

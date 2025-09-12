@@ -13,7 +13,9 @@ func main() {
 
 	application := app.NewApp()
 
-	if err := application.Start(); err != nil {
+	cleanup, err := application.Start()
+	defer cleanup()
+	if err != nil {
 		log.WithError(err).Fatal("Failed to start server")
 	}
 }

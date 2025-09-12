@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	IPRequestsKey = "ip_requests"
+)
+
 type IPService struct {
 	localIP    string
 	localCIDRs []*net.IPNet

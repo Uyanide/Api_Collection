@@ -2,6 +2,14 @@ package proxy_service
 
 import "github.com/gin-gonic/gin"
 
+var (
+	ProxiedRequestsKeyPrefix = "proxied_requests_"
+	ProxiedRequestsGETKey    = ProxiedRequestsKeyPrefix + "GET"
+	ProxiedRequestsPOSTKey   = ProxiedRequestsKeyPrefix + "POST"
+	ProxiedRequestsPUTKey    = ProxiedRequestsKeyPrefix + "PUT"
+	ProxiedRequestsDELETEKey = ProxiedRequestsKeyPrefix + "DELETE"
+)
+
 type ProxyService struct {
 	autoCorrectScheme bool
 }

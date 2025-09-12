@@ -11,7 +11,8 @@ import (
 
 // Config holds the general configuration(s) for the application
 type Config struct {
-	Port int
+	Port   int
+	DBPath string
 }
 
 func NewConfig() *Config {
@@ -36,8 +37,16 @@ func NewConfig() *Config {
 		}).Fatal("Invalid port configuration")
 	}
 
+	// Database path
+	dbPath := os.Getenv("DB_PATH")
+	if dbPath == "" {
+		dbPath = "data/db"
+		log.WithField("db_path", dbPath).Warn("No DB_PATH environment variable set, using default")
+	}
+
 	config := &Config{
-		Port: port,
+		Port:   port,
+		DBPath: dbPath,
 	}
 
 	return config

@@ -14,15 +14,17 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
 # Final runtime image
 FROM alpine:3.19
 
+ARG PUID
+ARG PGID
+ARG PORT
+
 # Create non-root user
-RUN addgroup -S app && adduser -S app -G app
+RUN addgroup -g ${PGID} app && adduser -u ${PUID} -G app -S app
 
 # Copy binary
 COPY --from=builder /app/api_collection /usr/local/bin/api_collection
 
 USER app
-EXPOSE 3289
-
-ENV GIN_MODE=release
+EXPOSE ${PORT}
 
 ENTRYPOINT ["/usr/local/bin/api_collection"]

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/Uyanide/Api_Collection/internal/config"
+	"github.com/Uyanide/Api_Collection/internal/db"
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/Uyanide/Api_Collection/internal/middleware"
 	"github.com/Uyanide/Api_Collection/internal/services"
@@ -21,7 +22,7 @@ type App struct {
 
 // NewApp creates a new application instance
 func NewApp() *App {
-	cfg := config.NewConfig()
+	config := config.NewConfig()
 	log := logger.GetLogger()
 
 	log.Info("Initializing application components")
@@ -36,24 +37,36 @@ func NewApp() *App {
 	log.Info("Application components initialized successfully")
 
 	return &App{
-		config: cfg,
+		config: config,
 		engine: engine,
 		logger: log,
 	}
 }
 
 // Start starts the application server
-func (a *App) Start() error {
+func (a *App) Start() (func(), error) {
+	db := db.GetDB()
+
+	a.logger.WithField("db_path", a.config.DBPath).Info("Opening database")
+	if err := db.Open(a.config.DBPath); err != nil {
+		a.logger.WithError(err).Error("Failed to open database")
+		return nil, err
+	}
+	cleanup := func() {
+		if err := db.Close(); err != nil {
+			a.logger.WithError(err).Error("Failed to close database")
+		}
+	}
+
 	a.logger.WithFields(logrus.Fields{
 		"port": a.config.Port,
 	}).Info("Starting server")
 
 	addr := ":" + strconv.Itoa(a.config.Port)
-
 	if err := a.engine.Run(addr); err != nil && err != http.ErrServerClosed {
 		a.logger.WithError(err).Error("Server failed to start or crashed")
-		return err
+		return cleanup, err
 	}
 
-	return nil
+	return cleanup, nil
 }

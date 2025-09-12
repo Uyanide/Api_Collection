@@ -32,6 +32,7 @@ func (s *FileService) loadConfig() {
 				Path: filePath,
 				Name: fileName,
 			}
+			FileDownloadsKeys = append(FileDownloadsKeys, FileDownloadsKeyPrefix+urlPath)
 
 			log.WithFields(logrus.Fields{
 				"url_path":  urlPath,

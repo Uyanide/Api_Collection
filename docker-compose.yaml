@@ -1,6 +1,11 @@
 services:
   api:
-    build: .
+    build:
+      context: .
+      args:
+        PORT: ${PORT}
+        PUID: ${PUID}
+        PGID: ${PGID}
     env_file:
       - .env
     ports:

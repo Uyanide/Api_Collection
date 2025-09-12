@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/Uyanide/Api_Collection/internal/db"
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -11,6 +12,7 @@ import (
 
 func (s *IPService) getIPHandler(c *gin.Context) {
 	log := logger.GetLogger()
+	dbInst := db.GetDB()
 
 	// Log the incoming request
 	clientIP := c.ClientIP()
@@ -52,6 +54,11 @@ func (s *IPService) getIPHandler(c *gin.Context) {
 		"response_ip": response.IP,
 		"status":      "success",
 	}).Info("Request processed successfully")
+
+	// Log request to database
+	if _, err := db.IncrementInt(dbInst, IPRequestsKey, 0); err != nil {
+		log.WithError(err).Error("Failed to log request to database")
+	}
 }
 
 func (s *IPService) getIP(clientIP string) (*ipResponse, error) {

@@ -6,6 +6,7 @@ Self-hosted deployment:
 
 1. Clone this repository;
 2. Create and edit `docker/.env`. All possible envs are listed below;
+3. Execute `docker/run.sh`.
 > [!IMPORTANT]
 >
 > `PORT` env is required when deploying with Docker. Either set it in your shell or add it to `docker/.env`. 
@@ -15,7 +16,6 @@ Develop or deploy without Docker:
 1. Clone this repository;
 2. Create and edit `.env`. All possible envs are listed below;
 3. `go run .` or other common methods to build and run a Go program.
-3. Execute `docker/run.sh`.
 
 >Example `docker/.env`:
 >```shell

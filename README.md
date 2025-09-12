@@ -51,3 +51,34 @@
     - **url**: url with http/https scheme
 - **envs**:
     - **AUTO_CORRECT_SCHEME**: whether to add `http://` to urls that do not begin with `http://` or `https://`. accepted values: `0` / `1`, default: `0`
+
+### Stats
+
+- **method**: GET
+- **route**: /stats
+- **responce**:
+    ```json
+    {
+        "total_requests": 0,
+        "ip_requests": {
+            "total_requests": 0
+        },
+        "file_downloads": {
+            "total_downloads": 0,
+            "most_downloaded": "/somefile",
+            "files": [
+                {
+                    "url_path": "/somefile",
+                    "downloads_count": 0
+                }
+            ]
+        },
+        "proxied_requests": {
+            "total_requests": 0,
+            "get": 0,
+            "post": 0,
+            "put": 0,
+            "delete": 0
+        }
+    }
+    ```

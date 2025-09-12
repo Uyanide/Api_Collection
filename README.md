@@ -1,4 +1,4 @@
-## API Collection for self use
+## API Collection for self use and practice
 
 ### General envs
 
@@ -75,6 +75,7 @@
         },
         "proxied_requests": {
             "total_requests": 0,
+            "successful": 0,
             "get": 0,
             "post": 0,
             "put": 0,

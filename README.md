@@ -1,9 +1,38 @@
 ## API Collection for self use and practice
 
+### Usage
+
+Self-hosted deployment:
+
+1. Clone this repository;
+2. Create and edit `docker/.env`. All possible envs are listed below;
+> [!IMPORTANT]
+>
+> `PORT` env is required when deploying with Docker. Either set it in your shell or add it to `docker/.env`. 
+
+Develop or deploy without Docker:
+
+1. Clone this repository;
+2. Create and edit `.env`. All possible envs are listed below;
+3. `go run .` or other common methods to build and run a Go program.
+3. Execute `docker/run.sh`.
+
+>Example `docker/.env`:
+>```shell
+>PORT="10087"
+>GIN_MODE="release"
+>DB_PATH="/app/data/db"
+>LOCAL_IP="19.19.8.10"
+>LOCAL_CIDRS="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,::1/128,fe80::/10,fc00::/7,fd00::/8"
+>FILE_MAP="/hello:/app/data/hello.txt:hello.txt"
+>AUTO_CORRECT_SCHEME="0"
+>```
+
 ### General envs
 
 - **PORT**: port that the server listens to (default: 10087)
 - **GIN_MODE**: as defined in [Gin Documentation](https://gin-gonic.com/en/docs/deployment/)
+- **DB_PATH**: path to database directory (default `data/db`)
 
 ### IP query
 
@@ -12,7 +41,7 @@
 - **envs**:
     - **LOCAL_IP**: public ip of the local system (defaut: 127.0.0.1 <s>which does not make any sense, I know</s>)
     - **LOCAL_CIDRS**: CIDRs of subnets & private networks (defaut: empty). e.g.
-        ```conf
+        ```shell
         LOCAL_CIDRS="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,::1/128,fe80::/10,fc00::/7,fd00::/8"
         ```
 > [!NOTE]
@@ -34,14 +63,14 @@
         - file_name: e.g. `myfile_downloaded.txt`
 
         as a whole,
-        ```conf
-        FILE_MAP=/myfile:/app/data/myfile.txt:myfile_downloaded.txt
+        ```shell
+        FILE_MAP="/myfile:/app/data/myfile.txt:myfile_downloaded.txt"
         ```
         means `domain.tld/myfile` will download `/app/data/myfile.txt` with name `myfile_downloaded.txt`
 - **response**: file as attachment
 > [!IMPORTANT]
 >
-> If the service runs in a docker container, make sure file_path in `FILE_MAP` points to files within the container rather than on the local disk. Consider placing the file in `./data`, which will map to `/app/data` within the container.
+> If the service runs in a Docker container, make sure file_path in `FILE_MAP` points to files within the container rather than on the local disk. Consider placing the file in `./data`, which will map to `/app/data` within the container.
 
 ### CORS proxy
 

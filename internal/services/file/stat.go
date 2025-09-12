@@ -1,6 +1,8 @@
 package file_service
 
 import (
+	"strings"
+
 	"github.com/Uyanide/Api_Collection/internal/db"
 )
 
@@ -40,14 +42,18 @@ func ConstructStatsFile() (*StatsFileResponse, error) {
 	}
 
 	// Find most downloaded & calculate sum
-	mostDownloaded := result.Files[0]
+	maxList := []string{}
+	maxCount := int64(-1)
 	for _, file := range result.Files {
-		if file.DownloadsCount > mostDownloaded.DownloadsCount {
-			mostDownloaded = file
+		if file.DownloadsCount > maxCount {
+			maxList = []string{file.UrlPath}
+			maxCount = file.DownloadsCount
+		} else if file.DownloadsCount == maxCount {
+			maxList = append(maxList, file.UrlPath)
 		}
 		result.TotalDownloads += file.DownloadsCount
 	}
-	result.MostDownloaded = mostDownloaded.UrlPath
+	result.MostDownloaded = strings.Join(maxList, ", ")
 
 	return &result, nil
 }

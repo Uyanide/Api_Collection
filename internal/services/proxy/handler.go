@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Uyanide/Api_Collection/internal/db"
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -13,13 +12,9 @@ import (
 
 func (s *ProxyService) handleProxy(c *gin.Context) {
 	log := logger.GetLogger()
-	dbInst := db.GetDB()
 
 	// Record request anyway
-	key := ProxiedRequestsKeyPrefix + c.Request.Method
-	if _, err := db.IncrementInt(dbInst, key, 0); err != nil {
-		log.WithError(err).Error("Failed to log proxied request to database")
-	}
+	increaseCounter(ProxiedRequestsKeyPrefix + c.Request.Method)
 
 	targetURL := c.Query("url")
 	if targetURL == "" {
@@ -84,8 +79,6 @@ func (s *ProxyService) handleProxy(c *gin.Context) {
 
 	// Record successful request
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		if _, err := db.IncrementInt(dbInst, ProxiedRequestsSuccessfulKey, 0); err != nil {
-			log.WithError(err).Error("Failed to log successful proxied request to database")
-		}
+		increaseCounter(ProxiedRequestsSuccessfulKey)
 	}
 }

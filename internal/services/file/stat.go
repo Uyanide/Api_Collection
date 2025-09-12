@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/Uyanide/Api_Collection/internal/db"
+	"github.com/Uyanide/Api_Collection/internal/logger"
 )
 
 type StatsFileResponse struct {
@@ -56,4 +57,13 @@ func ConstructStatsFile() (*StatsFileResponse, error) {
 	result.MostDownloaded = strings.Join(maxList, ", ")
 
 	return &result, nil
+}
+
+func increaseCounter(key string) {
+	dbInst := db.GetDB()
+	log := logger.GetLogger()
+
+	if _, err := db.IncrementInt(dbInst, key, 0, 1); err != nil {
+		log.WithError(err).Error("Failed to record file download in database")
+	}
 }

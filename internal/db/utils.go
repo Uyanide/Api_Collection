@@ -46,12 +46,12 @@ func GetOrCreateInt(db DBIntf, key string, defaultValue int64) (int64, error) {
 	return defaultValue, nil
 }
 
-func IncrementInt(db DBIntf, key string, defaultValue int) (int64, error) {
+func IncrementInt(db DBIntf, key string, defaultValue int64, increaseValue int64) (int64, error) {
 	value, err := GetOrCreateInt(db, key, 0)
 	if err != nil {
 		return 0, err
 	}
-	value++
+	value += increaseValue
 	if err := db.Set(key, strconv.FormatInt(value, 10)); err != nil {
 		return 0, err
 	}

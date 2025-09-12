@@ -3,7 +3,6 @@ package file_service
 import (
 	"os"
 
-	"github.com/Uyanide/Api_Collection/internal/db"
 	"github.com/Uyanide/Api_Collection/internal/logger"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -11,7 +10,6 @@ import (
 
 func (s *FileService) serveFile(c *gin.Context, urlPath string) {
 	log := logger.GetLogger()
-	dbInst := db.GetDB()
 
 	log.WithField("handler", "DownloadFile").Debug("Handling file download request")
 
@@ -30,9 +28,7 @@ func (s *FileService) serveFile(c *gin.Context, urlPath string) {
 		"file_name": fileName,
 	}).Info("Request processed successfully")
 
-	if _, err := db.IncrementInt(dbInst, FileDownloadsKeyPrefix+urlPath, 0); err != nil {
-		log.WithError(err).Error("Failed to log file download to database")
-	}
+	increaseCounter(FileDownloadsKeyPrefix + urlPath)
 }
 
 func (s *FileService) getFilePath(key string) (string, bool) {

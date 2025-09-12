@@ -7,6 +7,7 @@ import (
 var (
 	FileDownloadsKeyPrefix = "file_downloads_"
 	FileDownloadsKeys      = []string{}
+	// FileDownloadsRequestsKey = "file_downloads_requests"
 )
 
 type FileService struct {

@@ -15,6 +15,12 @@ func (s *ProxyService) handleProxy(c *gin.Context) {
 	log := logger.GetLogger()
 	dbInst := db.GetDB()
 
+	// Record request anyway
+	key := ProxiedRequestsKeyPrefix + c.Request.Method
+	if _, err := db.IncrementInt(dbInst, key, 0); err != nil {
+		log.WithError(err).Error("Failed to log proxied request to database")
+	}
+
 	targetURL := c.Query("url")
 	if targetURL == "" {
 		log.Warn("No URL provided in the request")
@@ -76,8 +82,10 @@ func (s *ProxyService) handleProxy(c *gin.Context) {
 		"status":     resp.StatusCode,
 	}).Info("Proxied request successfully")
 
-	key := ProxiedRequestsKeyPrefix + c.Request.Method
-	if _, err := db.IncrementInt(dbInst, key, 0); err != nil {
-		log.WithError(err).Error("Failed to log proxied request to database")
+	// Record successful request
+	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+		if _, err := db.IncrementInt(dbInst, ProxiedRequestsSuccessfulKey, 0); err != nil {
+			log.WithError(err).Error("Failed to log successful proxied request to database")
+		}
 	}
 }

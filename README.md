@@ -1,4 +1,4 @@
-## API Collection for self use and practice
+## A tiny API collection for self use and practice
 
 ### Usage
 

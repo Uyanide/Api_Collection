@@ -9,9 +9,9 @@ type StatsProxyResponse struct {
 	TotalRequests int64 `json:"total_requests"`
 	Successful    int64 `json:"successful"`
 	GET           int64 `json:"get"`
-	POST          int64 `json:"post"`
-	PUT           int64 `json:"put"`
-	DELETE        int64 `json:"delete"`
+	// POST          int64 `json:"post"`
+	// PUT           int64 `json:"put"`
+	// DELETE        int64 `json:"delete"`
 }
 
 func ConstructStatsProxy() (*StatsProxyResponse, error) {
@@ -41,9 +41,9 @@ func ConstructStatsProxy() (*StatsProxyResponse, error) {
 		TotalRequests: vGet + vPost + vPut + vDelete,
 		Successful:    vSuccessful,
 		GET:           vGet,
-		POST:          vPost,
-		PUT:           vPut,
-		DELETE:        vDelete,
+		// POST:          vPost,
+		// PUT:           vPut,
+		// DELETE:        vDelete,
 	}, nil
 }
 

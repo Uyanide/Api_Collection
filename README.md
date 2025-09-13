@@ -9,7 +9,7 @@ Self-hosted deployment:
 3. Execute `docker/run.sh`.
 > [!IMPORTANT]
 >
-> `PORT` env is required when deploying with Docker. Either set it in your shell or add it to `docker/.env`. 
+> `PORT` env is required when deploying with Docker. Either set it in your shell or add it to `docker/.env`.
 
 Develop or deploy without Docker:
 
@@ -106,9 +106,5 @@ Develop or deploy without Docker:
             "total_requests": 0,
             "successful": 0,
             "get": 0,
-            "post": 0,
-            "put": 0,
-            "delete": 0
-        }
     }
     ```

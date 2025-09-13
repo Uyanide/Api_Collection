@@ -3,6 +3,7 @@ package proxy_service
 import (
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/Uyanide/Api_Collection/internal/logger"
@@ -41,8 +42,38 @@ func (s *ProxyService) handleProxy(c *gin.Context) {
 		return
 	}
 
-	// Copy original request headers
+	// Ensure Host is target host and filter headers that should not be forwarded
+	if u, err := url.Parse(targetURL); err == nil {
+		req.Host = u.Host
+	}
+
+	// hop-by-hop headers and some browser-specific headers should not be forwarded
+	hopByHop := map[string]bool{
+		"Connection":          true,
+		"Proxy-Connection":    true,
+		"Keep-Alive":          true,
+		"Proxy-Authenticate":  true,
+		"Proxy-Authorization": true,
+		"Te":                  true,
+		"Trailer":             true,
+		"Transfer-Encoding":   true,
+		"Upgrade":             true,
+	}
+	// browser headers that often cause upstream blocking
+	blockHeaders := map[string]bool{
+		"Origin":         true,
+		"Referer":        true,
+		"Sec-Fetch-Site": true,
+		"Sec-Fetch-Mode": true,
+		"Sec-Fetch-Dest": true,
+		"Sec-Fetch-User": true,
+	}
+
+	// Copy original request headers, skipping hop-by-hop and blocking ones
 	for key, values := range c.Request.Header {
+		if hopByHop[key] || blockHeaders[key] {
+			continue
+		}
 		for _, value := range values {
 			req.Header.Add(key, value)
 		}

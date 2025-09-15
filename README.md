@@ -25,6 +25,7 @@ Develop or deploy without Docker:
 >LOCAL_IP="19.19.8.10"
 >LOCAL_CIDRS="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,::1/128,fe80::/10,fc00::/7,fd00::/8"
 >FILE_MAP="/hello:/app/data/hello.txt:hello.txt"
+>DIR_MAP="/wallpapers:/app/data/backgrounds"
 >AUTO_CORRECT_SCHEME="0"
 >```
 

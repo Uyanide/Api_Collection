@@ -12,6 +12,8 @@ func (s *FileService) setupRoutes(r *gin.Engine) {
 	// Directories
 	for urlPath := range s.dirMap {
 		path := urlPath
-		r.GET(path+"/*filepath", func(c *gin.Context) { s.serveDirFile(c, path) })
+		r.GET(path, func(c *gin.Context) { s.serveDirFile(c, path) })
+		g := r.Group(path)
+		g.GET("/*filepath", func(c *gin.Context) { s.serveDirFile(c, path) })
 	}
 }

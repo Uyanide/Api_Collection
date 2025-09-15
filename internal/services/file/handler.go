@@ -1,6 +1,7 @@
 package file_service
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -65,19 +66,51 @@ func (s *FileService) serveDirFile(c *gin.Context, urlPath string) {
 	}
 
 	filepath := c.Param("filepath")
-	if filepath == "" || filepath == "/" {
-		c.AbortWithStatusJSON(400, gin.H{"error": "File path is required"})
-		log.WithField("urlPath", urlPath).Warn("File path is required")
-		return
-	}
+	// if filepath == "" || filepath == "/" {
+	// 	c.AbortWithStatusJSON(400, gin.H{"error": "File path is required"})
+	// 	log.WithField("urlPath", urlPath).Warn("File path is required")
+	// 	return
+	// }
 
 	fullPath := dirObj.Path + filepath
+
 	if _, err := os.Stat(fullPath); err != nil {
 		c.AbortWithStatusJSON(404, gin.H{"error": "File not found"})
 		log.WithFields(logrus.Fields{
 			"urlPath":  urlPath,
 			"filepath": filepath,
 		}).Warn("File not found in directory")
+		return
+	}
+
+	// If is a directory
+	if stat, _ := os.Stat(fullPath); stat.IsDir() {
+		files, err := os.ReadDir(fullPath)
+		if err != nil {
+			c.AbortWithStatusJSON(500, gin.H{"error": "Failed to read directory"})
+			return
+		}
+		html := fmt.Sprintf("<html><body><h2>index of %s%s/ </h2><ul>", urlPath, filepath)
+		dirEntries := []string{}
+		fileEntries := []string{}
+		for _, f := range files {
+			name := f.Name()
+			link := fmt.Sprintf("%s%s/%s", urlPath, filepath, name)
+			if f.IsDir() {
+				dirEntries = append(dirEntries, fmt.Sprintf(`<li><a href="%s/">%s/</a></li>`, link, name))
+			} else {
+				fileEntries = append(fileEntries, fmt.Sprintf(`<li><a href="%s">%s</a></li>`, link, name))
+			}
+		}
+		// Directories first
+		for _, entry := range dirEntries {
+			html += entry
+		}
+		for _, entry := range fileEntries {
+			html += entry
+		}
+		html += "</ul></body></html>"
+		c.Data(200, "text/html; charset=utf-8", []byte(html))
 		return
 	}
 

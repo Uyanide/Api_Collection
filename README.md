@@ -66,34 +66,37 @@ Develop or deploy without Docker:
         ```shell
         FILE_MAP="/myfile:/app/data/myfile.txt:myfile_downloaded.txt"
         ```
-        means `domain.tld/myfile` will download `/app/data/myfile.txt` with name `myfile_downloaded.txt`
+        means `/app/data/myfile.txt` can be downloaded via `http://domain.tld/myfile` with name `myfile_downloaded.txt`
 - **response**: file as attachment
 > [!IMPORTANT]
 >
 > If the service runs in a Docker container, make sure file_path in `FILE_MAP` points to files within the container rather than on the local disk. Consider placing the file in `./data`, which will map to `/app/data` within the container.
 
-### File service
+### File service (in directories)
 
 - **method**: GET
-- **route**: `$url_path/*filepath`, where `url_path` is defined in `DIR_MAP`
+- **route**: `${url_path}/*filepath`, where `url_path` is defined in `DIR_MAP`
 - **envs**:
-    - **DIR_MAP**: entries separated with `,`, each entry consists of three elements sepatated with `:`:
+    - **DIR_MAP**: entries separated with `,`, each entry consists of two elements sepatated with `:`:
         - url_path: e.g. `/wallpapers`
-        - path: e.g. `/app/data/wallpapers`
+        - dir_path: e.g. `/app/data/backgrounds`
 
         for example, if `DIR_MAP` is set to
         ```shell
         DIR_MAP="/wallpapers:/app/data/wallpapers"
         ```
-        and there is a file `/app/data/wallpapers/nature/mountain.jpg`, then it can be downloaded via `domain.tld/wallpapers/nature/mountain.jpg`
-- **response**: file as attachment
+        and there is a file `/app/data/backgrounds/nature/mountain.jpg`, then it can be downloaded via `http://domain.tld/wallpapers/nature/mountain.jpg`, and the file name will be `mountain.jpg`.
+- **response**:
+    - if the path points to a file, the file will be sent as attachment;
+    - if the path points to a directory, an HTML page listing all files and sub-directories will be sent.
+
 > [!IMPORTANT]
 >
 > If the service runs in a Docker container, make sure path in `DIR_MAP` points to dir within the container rather than on the local disk. Consider placing the files in `./data`, which will map to `/app/data` within the container.
 
 > [!CAUTION]
 >
-> No trailing slash is allowed in `url_path` and `path` in `DIR_MAP`.
+> No trailing slash is allowed in `url_path` and `dir_path` in `DIR_MAP`.
 
 
 

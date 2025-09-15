@@ -24,7 +24,7 @@ func ConstructStatsFile() (*StatsFileResponse, error) {
 	result := StatsFileResponse{}
 	result.Files = []StatsFileDetail{}
 
-	for _, key := range FileDownloadsKeys {
+	for key := range FileDownloadsKeys {
 		value, err := db.GetOrCreateInt(dbInst, key, 0)
 		if err != nil {
 			continue // skip error
@@ -66,4 +66,7 @@ func increaseCounter(key string) {
 	if _, err := db.IncrementInt(dbInst, key, 0, 1); err != nil {
 		log.WithError(err).Error("Failed to record file download in database")
 	}
+
+	// Insert key into in-memory map
+	FileDownloadsKeys[key] = struct{}{}
 }

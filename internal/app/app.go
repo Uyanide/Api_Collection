@@ -27,6 +27,13 @@ func NewApp() *App {
 
 	log.Info("Initializing application components")
 
+	// Initialize Database
+	log.WithField("db_path", config.DBPath).Info("Opening database")
+	dbInst := db.GetDB()
+	if err := dbInst.Open(config.DBPath); err != nil {
+		log.WithError(err).Fatal("Failed to open database")
+	}
+
 	// Initialize Gin engine
 	engine := gin.Default()
 	engine.Use(middleware.StripTrailingSlash())
@@ -47,11 +54,6 @@ func NewApp() *App {
 func (a *App) Start() (func(), error) {
 	db := db.GetDB()
 
-	a.logger.WithField("db_path", a.config.DBPath).Info("Opening database")
-	if err := db.Open(a.config.DBPath); err != nil {
-		a.logger.WithError(err).Error("Failed to open database")
-		return nil, err
-	}
 	cleanup := func() {
 		if err := db.Close(); err != nil {
 			a.logger.WithError(err).Error("Failed to close database")

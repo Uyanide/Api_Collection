@@ -6,12 +6,13 @@ import (
 
 var (
 	FileDownloadsKeyPrefix = "file_downloads_"
-	FileDownloadsKeys      = []string{}
+	FileDownloadsKeys      = map[string]struct{}{}
 	// FileDownloadsRequestsKey = "file_downloads_requests"
 )
 
 type FileService struct {
 	fileMap map[string]fileObject
+	dirMap  map[string]dirObject
 }
 
 func (s *FileService) Init(e *gin.Engine) {
